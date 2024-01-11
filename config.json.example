@@ -1,0 +1,10 @@
+// rename to config.json
+{
+    "webhookUrl": "https://discordapp.com/api/webhooks/.../...",
+    "servers": [
+        {
+            "url": "",
+            "expectedStatusCode": 200
+        }
+    ]
+}
