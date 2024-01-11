@@ -82,7 +82,7 @@ func main() {
 		}
 		embedFields = append(embedFields, EmbedField{
 			Name: result.Url,
-			Value: fmt.Sprintf("%s\tResponse Time: %dms", okText, result.ResponseTime),
+			Value: fmt.Sprintf("**Response Time**: %dms\n**Status**: %d %s", result.ResponseTime, result.Status, okText),
 		})
 	}
 	description := fmt.Sprintf("There are %d server(s)", len(results))
