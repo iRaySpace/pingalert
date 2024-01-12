@@ -44,7 +44,9 @@ type WebhookData struct {
 }
 
 func main() {
-	data, err := os.ReadFile("config.json")
+	configPath := os.Getenv("CONFIG_PATH")
+	fmt.Println("Reading config from: ", configPath)
+	data, err := os.ReadFile(configPath)
 	if err != nil {
 		panic(err)
 	}
@@ -85,7 +87,7 @@ func main() {
 			Value: fmt.Sprintf("**Response Time**: %dms\n**Status**: %d %s", result.ResponseTime, result.Status, okText),
 		})
 	}
-	description := fmt.Sprintf("There are %d server(s)", len(results))
+	description := fmt.Sprintf("%d server(s) as of %s", len(results), time.Now().Format("2006-01-02 15:04:05"))
 	webhookData := &WebhookData{
 		Embeds: []EmbedData{
 			{
