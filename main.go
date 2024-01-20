@@ -50,11 +50,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	config := &Config{}
 	err = json.Unmarshal(data, config)
 	if err != nil {
 		panic(err)
 	}
+
 	var results[] ComparisonResult
 	for _, server := range config.Servers {
 		startTime := time.Now()
@@ -75,19 +77,25 @@ func main() {
 		}
 		results = append(results, result)
 	}
+
 	embedFields := []EmbedField{}
+	var upServers, downServers int
 	for _, result := range results {
 		isOk := result.HasExpectedStatus
 		okText := "✅"
 		if !isOk {
 			okText = "❌"
+			downServers = downServers + 1
+		} else {
+			upServers = upServers + 1
 		}
 		embedFields = append(embedFields, EmbedField{
 			Name: result.Url,
 			Value: fmt.Sprintf("**Response Time**: %dms\n**Status**: %d %s", result.ResponseTime, result.Status, okText),
 		})
 	}
-	description := fmt.Sprintf("%d server(s) as of %s", len(results), time.Now().Format("2006-01-02 15:04:05"))
+
+	description := fmt.Sprintf("UP: %d\nDOWN: %d", upServers, downServers)
 	webhookData := &WebhookData{
 		Embeds: []EmbedData{
 			{
@@ -97,10 +105,12 @@ func main() {
 			},
 		},
 	}
+
 	jsonData, err := json.Marshal(webhookData)
 	if err != nil {
 		panic(err)
 	}
+
 	_, err2 := http.Post(config.WebhookUrl, "application/json", strings.NewReader(string(jsonData)))
 	if err2 != nil {
 		panic(err)
